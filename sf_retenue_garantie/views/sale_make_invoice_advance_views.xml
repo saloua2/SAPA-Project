@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_sale_advance_payment_inv_inherit" model="ir.ui.view">
+        <field name="name">sale.advance.payment.inv.inherit</field>
+        <field name="model">sale.advance.payment.inv</field>
+        <field name="inherit_id" ref="sale.view_sale_advance_payment_inv"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='advance_payment_method']" position="after">
+                <label for="guarantee_percentage"
+                       string="Pourcentage"
+                       attrs="{'invisible': [('advance_payment_method', '!=', 'retenue_de_garantie')]}"/>
+                <div id="retenue_details">
+                    <field name="guarantee_percentage"
+                           attrs="{'invisible': [('advance_payment_method', '!=', 'retenue_de_garantie')]}"
+                           class="oe_inline"/>
+                    <span attrs="{'invisible': [('advance_payment_method', '!=', 'retenue_de_garantie')]}"
+                          class="oe_inline">%
+                    </span>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>
