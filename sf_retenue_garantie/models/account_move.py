@@ -51,7 +51,7 @@ class AccountMove(models.Model):
             #         'credit': self.prime_amount}
             #     self.env['account.move.line'].create(vals_credit)
 
-        res = super(AccountMove, self).action_post()
+        # res = super(AccountMove, self).action_post()
         return res
 
 
