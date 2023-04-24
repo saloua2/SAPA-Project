@@ -27,4 +27,9 @@ class SaleOrder(models.Model):
                 'prime': self.prime,
                 'prime_amount': self.prime_amount,
             })
+        if self.guarantee_return:
+            res.update({
+                'guarantee_return': self.guarantee_return,
+                'rg_percentage': self.rg_percentage,
+            })
         return res

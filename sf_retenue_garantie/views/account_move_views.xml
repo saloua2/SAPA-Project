@@ -7,7 +7,7 @@
         <field name="arch" type="xml">
             <field name="to_check" position="after">
                 <field name="guarantee_return"/>
-                <field name="guarantee_percentage"/>
+                <field name="rg_percentage"/>
                 <field name="prime"/>
                 <field name="prime_amount" attrs="{'invisible':[('prime','=',False)]}"/>
             </field>

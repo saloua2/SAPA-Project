@@ -19,7 +19,7 @@ class AccountMove(models.Model):
 
     @api.depends('amount_total')
     def compute_guarantee_percentage(self):
-        self.guarantee_percentage = self.amount_total * 0.05
+        self.guarantee_percentage = self.amount_total * (self.rg_percentage/100)
 
     def action_post(self):
         due_date = fields.Date.context_today(self).replace(fields.Date.context_today(self).year + 1)
