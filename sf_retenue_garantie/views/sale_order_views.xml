@@ -5,8 +5,12 @@
         <field name="model">sale.order</field>
         <field name="inherit_id" ref="sale.view_order_form"/>
         <field name="arch" type="xml">
+            <group name="sale_info" position='inside'>
+                <field name="guarantee_return"/>
+                <field name="prime"/>
+            </group>
             <xpath expr="//field[@name='tax_totals']" position="after">
-                <field name="guarantee_percentage"/>
+                <field name="guarantee_percentage" attrs="{'invisible':[('guarantee_return','=',False)]}"/>
             </xpath>
         </field>
     </record>
