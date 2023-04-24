@@ -5,6 +5,9 @@ class AccountMove(models.Model):
     _inherit = 'account.move'
 
     guarantee_percentage = fields.Float(compute='compute_guarantee_percentage')
+    sale_order_id = fields.Many2one('sale.order')
+    guarantee_return = fields.Boolean(string="Retenue de Garantie")
+    rg_percentage = fields.Float('Pourcentage(RG)')
     prime_total_amount = fields.Float(compute='compute_prime_percentage')
     prime_amount = fields.Float("CEE Amount")
     prime = fields.Boolean(string="Prime CEE")
@@ -25,7 +28,7 @@ class AccountMove(models.Model):
             'name': 'Draft',
             'invoice_number': self.name,
             'customer_id': self.partner_id.id,
-            'amount': self.amount_total,
+            'amount': self.guarantee_percentage,
             'due_date': due_date
         }
         self.env['sf.retenue.guarantee'].create(vals)

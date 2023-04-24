@@ -6,13 +6,14 @@ class SaleOrder(models.Model):
 
     guarantee_percentage = fields.Float(compute='compute_guarantee_percentage')
     guarantee_return = fields.Boolean(string="Retenue de Garantie")
+    rg_percentage = fields.Float('Pourcentage(RG)', default=5.0)
     prime_total_amount = fields.Float(compute='compute_prime_percentage')
     prime_amount = fields.Float("CEE Amount")
     prime = fields.Boolean(string="Prime CEE")
 
     @api.depends('amount_total')
     def compute_guarantee_percentage(self):
-        self.guarantee_percentage = self.amount_total * 0.05
+        self.guarantee_percentage = self.amount_total * (self.rg_percentage / 100)
 
     @api.depends('amount_total', 'prime_amount')
     def compute_prime_percentage(self):

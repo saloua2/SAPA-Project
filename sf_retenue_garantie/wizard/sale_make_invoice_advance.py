@@ -8,7 +8,8 @@ class SaleAdvancePaymentInv(models.TransientModel):
     advance_payment_method = fields.Selection(selection_add=[
         ('retenue_de_garantie', 'Retenue de garantie')],
         ondelete={'retenue_de_garantie': 'cascade'})
-    guarantee_percentage = fields.Float(string="Pourcentage", default=5.0)
+    guarantee_percentage = fields.Float(string="Pourcentage(RG)")
+    due_date = fields.Date("Date d'échéance")
     prime_amount = fields.Float("CEE Amount")
     prime = fields.Boolean(string="Prime CEE")
 
@@ -18,9 +19,12 @@ class SaleAdvancePaymentInv(models.TransientModel):
         active_id = self.env.context.get('active_id')
         if active_id:
             sale_order = self.env['sale.order'].browse(active_id)
+            date_order = sale_order.date_order
             res.update({
                 'prime_amount': sale_order.prime_amount or 0.0,
-                'prime': sale_order.prime
+                'prime': sale_order.prime,
+                'guarantee_percentage': sale_order.rg_percentage,
+                'due_date': date_order.replace(date_order.year + 1)
             })
         return res
 

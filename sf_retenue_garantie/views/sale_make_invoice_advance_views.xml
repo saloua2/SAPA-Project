@@ -16,12 +16,12 @@
                     <span attrs="{'invisible': [('advance_payment_method', '!=', 'retenue_de_garantie')]}"
                           class="oe_inline">%
                     </span>
-
                 </div>
+                <field name="due_date" attrs="{'invisible': [('advance_payment_method', '!=', 'retenue_de_garantie')]}"/>
                 <field name="prime" invisible="1"/>
                 <field name="prime_amount"
-                           attrs="{'invisible': ['|', ('advance_payment_method', '!=', 'retenue_de_garantie'), ('prime', '!=', True)]}"
-                           class="oe_inline"/>
+                       attrs="{'invisible': ['|', ('advance_payment_method', '!=', 'retenue_de_garantie'), ('prime', '!=', True)]}"
+                       class="oe_inline"/>
             </xpath>
         </field>
     </record>

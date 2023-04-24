@@ -14,7 +14,7 @@
                                 <field name="name" attrs="{'invisible':[('name', '=', '/')],
                                 'readonly': [('state', '!=', 'draft')]}" placeholder="Draft"/>
 
-                                <span attrs="{'invisible': ['|', ('state', '!=', 'draft'), ('name', '!=', '/')]}">
+                                <span attrs="{'invisible': ['|', ('state', '!=', 'draft')]}">
                                     Draft
                                 </span>
                             </h1>
@@ -33,6 +33,19 @@
                 </form>
             </field>
         </record>
+        <record id="retenue_garantie_view_list" model="ir.ui.view">
+            <field name="model">sf.retenue.guarantee</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="invoice_number"/>
+                    <field name="customer_id"/>
+                    <field name="amount"/>
+                    <field name="due_date"/>
+                </tree>
+            </field>
+        </record>
+
         <record id="retenue_garantie_action" model="ir.actions.act_window">
             <field name="name">Retenue de garantie</field>
             <field name="res_model">sf.retenue.guarantee</field>
