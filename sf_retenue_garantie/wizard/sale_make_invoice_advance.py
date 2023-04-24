@@ -9,6 +9,20 @@ class SaleAdvancePaymentInv(models.TransientModel):
         ('retenue_de_garantie', 'Retenue de garantie')],
         ondelete={'retenue_de_garantie': 'cascade'})
     guarantee_percentage = fields.Float(string="Pourcentage", default=5.0)
+    prime_amount = fields.Float("CEE Amount")
+    prime = fields.Boolean(string="Prime CEE")
+
+    @api.model
+    def default_get(self, fields):
+        res = super(SaleAdvancePaymentInv, self).default_get(fields)
+        active_id = self.env.context.get('active_id')
+        if active_id:
+            sale_order = self.env['sale.order'].browse(active_id)
+            res.update({
+                'prime_amount': sale_order.prime_amount or 0.0,
+                'prime': sale_order.prime
+            })
+        return res
 
     # def create_invoices(self):
     #     print("advance_payment_method******",self.advance_payment_method)

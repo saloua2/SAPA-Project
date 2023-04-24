@@ -8,9 +8,11 @@
             <group name="sale_info" position='inside'>
                 <field name="guarantee_return"/>
                 <field name="prime"/>
+                <field name="prime_amount" attrs="{'invisible':[('prime','=',False)]}"/>
             </group>
             <xpath expr="//field[@name='tax_totals']" position="after">
                 <field name="guarantee_percentage" attrs="{'invisible':[('guarantee_return','=',False)]}"/>
+                <field name="prime_total_amount" attrs="{'invisible':[('prime','=',False)]}"/>
             </xpath>
         </field>
     </record>
