@@ -11,6 +11,7 @@
         'base',
         'account',
         'sale_management',
+        'l10n_fr',
     ],
     'data': [
         'security/ir.model.access.csv',
