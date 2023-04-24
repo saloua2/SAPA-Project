@@ -29,11 +29,7 @@ class SaleAdvancePaymentInv(models.TransientModel):
         """
         if self.advance_payment_method == 'retenue_de_garantie':
             if self.guarantee_percentage:
-                print(sale_orders.amount_total)
-            #     sale_orders.order_line._recompute_qty_to_invoice(
-            #         self.date_start_invoice_timesheet, self.date_end_invoice_timesheet)
-
-            return sale_orders.with_context()._create_invoices(final=self.deduct_down_payments)
+                return sale_orders.with_context()._create_invoices(final=self.deduct_down_payments)
 
         return super()._create_invoices(sale_orders)
 

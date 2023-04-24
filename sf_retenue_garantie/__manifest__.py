@@ -17,6 +17,8 @@
         'views/sale_make_invoice_advance_views.xml',
         'views/sale_order_views.xml',
         'views/account_move_views.xml',
+        'views/retenue_garantie_views.xml',
+        'views/account_menuitem.xml',
     ],
     'installable': True,
     'application': True,
