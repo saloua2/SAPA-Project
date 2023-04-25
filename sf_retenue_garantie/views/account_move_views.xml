@@ -8,8 +8,8 @@
         <field name="arch" type="xml">
             <field name="to_check" position="after">
                 <field name="guarantee_return"/>
-                <field name="rg_percentage"/>
-                <field name="date_echeance"/>
+                <field name="rg_percentage" attrs="{'invisible':[('guarantee_return','=',False)]}"/>
+                <field name="date_echeance" attrs="{'invisible':[('guarantee_return','=',False)]}"/>
                 <field name="prime"/>
                 <field name="prime_amount" attrs="{'invisible':[('prime','=',False)]}"/>
             </field>
