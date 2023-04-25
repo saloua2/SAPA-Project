@@ -190,7 +190,6 @@ class AccountMove(models.Model):
                             '.', ','))
                     move.tax_totals['amount_total'] -= move.guarantee_percentage
                     move.tax_totals['amount_untaxed'] -= move.guarantee_percentage
-                    move.tax_totals['amount_untaxed'] -= move.guarantee_percentage
 
                     move.tax_totals['guarantee_percentage'] = move.guarantee_percentage
                     move.tax_totals['guarantee_percentage_formatted'] = '{:.2f}'.format(

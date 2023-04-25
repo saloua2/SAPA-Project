@@ -12,6 +12,7 @@
         'account',
         'sale_management',
         'l10n_fr',
+        'sale_subscription',
     ],
     'data': [
         'data/products.xml',
@@ -20,8 +21,8 @@
         'views/sale_order_views.xml',
         'views/account_move_views.xml',
         'views/retenue_garantie_views.xml',
-        'views/account_menuitem.xml',
         'views/prime_cee_views.xml',
+        'views/account_menuitem.xml',
     ],
     'assets': {
         'web.assets_backend': [
