@@ -225,6 +225,7 @@ class AccountMove(models.Model):
         for move in self:
             if move.prime:
                 move.amount_residual -= move.prime_amount
-                move.amount_residual -= move.guarantee_percentage
                 move.amount_total -= move.prime_amount
+            if move.guarantee_return:
+                move.amount_residual -= move.guarantee_percentage
                 move.amount_total -= move.guarantee_percentage
