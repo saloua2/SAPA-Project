@@ -7,9 +7,16 @@ class SaleOrder(models.Model):
     guarantee_percentage = fields.Float(compute='compute_guarantee_percentage')
     guarantee_return = fields.Boolean(string="Retenue de Garantie")
     rg_percentage = fields.Float('Pourcentage(RG)', default=5.0)
+    date_echeance = fields.Date("Date d'échéance")
     prime_total_amount = fields.Float(compute='compute_prime_percentage')
     prime_amount = fields.Float("CEE Amount")
     prime = fields.Boolean(string="Prime CEE")
+
+    @api.model
+    def default_get(self, field_list=[]):
+        rtn = super(SaleOrder, self).default_get(field_list)
+        rtn['date_echeance'] = fields.Date.context_today(self).replace(fields.Date.context_today(self).year + 1)
+        return rtn
 
     @api.depends('amount_total')
     def compute_guarantee_percentage(self):
@@ -72,5 +79,5 @@ class SaleOrder(models.Model):
                 tax_totals['guarantee_percentage'] = order.guarantee_percentage
                 tax_totals['guarantee_percentage_formatted'] = '{:.2f}'.format(order.guarantee_percentage).replace(
                     '.',
-                    ',') + ' %'
+                    ',') + str(order.currency_id.symbol)
             order.tax_totals = tax_totals

@@ -8,6 +8,7 @@
             <group name="sale_info" position='inside'>
                 <field name="guarantee_return"/>
                 <field name="rg_percentage" attrs="{'invisible':[('guarantee_return','=',False)]}" class="oe_inline"/>
+                <field name="date_echeance"/>
                 <field name="prime"/>
                 <field name="prime_amount" attrs="{'invisible':[('prime','=',False)]}"/>
             </group>
