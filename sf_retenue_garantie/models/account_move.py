@@ -163,13 +163,15 @@ class AccountMove(models.Model):
                     move.tax_totals['formatted_amount_total_rounded'] = formatLang(self.env, amount_total_rounded,
                                                                                    currency_obj=move.currency_id) or ''
 
-                if move.prime:
+                if move.prime or move.guarantee_return:
                     move.tax_totals['formatted_amount_total'] = move.tax_totals['formatted_amount_total'].replace(
                         str(move.tax_totals['amount_total']).replace('.', ','),
-                        str(move.tax_totals['amount_total'] - move.prime_amount).replace('.', ','))
+                        str(move.tax_totals['amount_total'] - move.prime_amount - move.guarantee_percentage).replace(
+                            '.', ','))
                     move.tax_totals['formatted_amount_untaxed'] = move.tax_totals['formatted_amount_untaxed'].replace(
                         str(move.tax_totals['amount_untaxed']).replace('.', ','),
-                        str(move.tax_totals['amount_untaxed'] - move.prime_amount).replace('.', ','))
+                        str(move.tax_totals['amount_untaxed'] - move.prime_amount - move.guarantee_percentage).replace(
+                            '.', ','))
                     move.tax_totals['amount_total'] -= move.prime_amount
                     move.tax_totals['amount_untaxed'] -= move.prime_amount
                     move.tax_totals['amount_untaxed'] -= move.prime_amount
@@ -202,10 +204,15 @@ class AccountMove(models.Model):
         'line_ids.full_reconcile_id',
         'state',
         'prime_amount',
-        'prime')
+        'prime',
+        'rg_percentage',
+        'guarantee_return',
+        'guarantee_percentage')
     def _compute_amount(self):
         super(AccountMove, self)._compute_amount()
         for move in self:
             if move.prime:
                 move.amount_residual -= move.prime_amount
+                move.amount_residual -= move.guarantee_percentage
                 move.amount_total -= move.prime_amount
+                move.amount_total -= move.guarantee_percentage

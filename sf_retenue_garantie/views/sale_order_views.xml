@@ -13,8 +13,25 @@
             </group>
             <xpath expr="//field[@name='tax_totals']" position="after">
                 <field name="guarantee_percentage" invisible="1"/>
-<!--                <field name="guarantee_percentage" attrs="{'invisible':[('guarantee_return','=',False)]}"/>-->
-<!--                <field name="prime_total_amount" attrs="{'invisible':[('prime','=',False)]}"/>-->
+                <!--                <field name="guarantee_percentage" attrs="{'invisible':[('guarantee_return','=',False)]}"/>-->
+                <!--                <field name="prime_total_amount" attrs="{'invisible':[('prime','=',False)]}"/>-->
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_order_sale_subscription_form_inherit" model="ir.ui.view">
+        <field name="name">sale.order.inherit</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale_subscription.sale_subscription_primary_form_view"/>
+        <field name="arch" type="xml">
+            <group name="sale_info" position="inside">
+                <field name="guarantee_return"/>
+                <field name="prime"/>
+                <field name="prime_amount" attrs="{'invisible':[('prime','=',False)]}"/>
+            </group>
+            <xpath expr="//field[@name='tax_totals']" position="before">
+                <field name="guarantee_percentage" attrs="{'invisible':[('guarantee_return','=',False)]}"/>
+                <field name="prime_amount" attrs="{'invisible':[('prime','=',False)]}"/>
             </xpath>
         </field>
     </record>
