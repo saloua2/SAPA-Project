@@ -1,8 +1,5 @@
 from odoo import api, fields, models, _
-from odoo import api, fields, models, _
-from odoo.tools import (
-    formatLang,
-)
+from odoo.tools import formatLang
 
 
 class AccountMove(models.Model):
@@ -187,6 +184,8 @@ class AccountMove(models.Model):
                     #     str(move.tax_totals['amount_untaxed'] - move.guarantee_percentage).replace(
                     #         '.', ','))
                     move.tax_totals['amount_total'] -= move.guarantee_percentage
+
+                    # move.tax_totals['amount_untaxed'] -= move.guarantee_percentage
 
                     move.tax_totals['guarantee_percentage'] = move.guarantee_percentage
                     move.tax_totals['guarantee_percentage_formatted'] = '{:.2f}'.format(
