@@ -46,28 +46,28 @@ class SaleOrder(models.Model):
             if order.prime:
                 tax_totals['formatted_amount_total'] = tax_totals['formatted_amount_total'].replace(
                     str(tax_totals['amount_total']).replace('.', ','),
-                    str(tax_totals['amount_total'] - order.prime_amount - order.guarantee_percentage).replace('.', ','))
-                tax_totals['formatted_amount_untaxed'] = tax_totals['formatted_amount_untaxed'].replace(
-                    str(tax_totals['amount_untaxed']).replace('.', ','),
-                    str(tax_totals['amount_untaxed'] - order.prime_amount - order.guarantee_percentage).replace('.',
-                                                                                                                ','))
+                    str(tax_totals['amount_total'] - order.prime_amount).replace('.', ','))
+                # tax_totals['formatted_amount_untaxed'] = tax_totals['formatted_amount_untaxed'].replace(
+                #     str(tax_totals['amount_untaxed']).replace('.', ','),
+                #     str(tax_totals['amount_untaxed'] - order.prime_amount - order.guarantee_percentage).replace('.',
+                #                                                                                                 ','))
                 tax_totals['amount_total'] -= order.prime_amount
-                tax_totals['amount_untaxed'] -= order.prime_amount
+                # tax_totals['amount_untaxed'] -= order.prime_amount
                 tax_totals['prime_amount'] = order.prime_amount
                 tax_totals['prime_amount_formatted'] = '{:.2f}'.format(
-                    order.prime_amount - order.guarantee_percentage).replace('.',
+                    order.prime_amount).replace('.',
                                                                              ',') + ' ' + str(
                     order.currency_id.symbol)
             if order.guarantee_return:
                 tax_totals['formatted_amount_total'] = tax_totals['formatted_amount_total'].replace(
                     str(tax_totals['amount_total']).replace('.', ','),
                     str(tax_totals['amount_total'] - order.guarantee_percentage).replace('.', ','))
-                tax_totals['formatted_amount_untaxed'] = tax_totals['formatted_amount_untaxed'].replace(
-                    str(tax_totals['amount_untaxed']).replace('.', ','),
-                    str(tax_totals['amount_untaxed'] - order.guarantee_percentage).replace('.',
-                                                                                           ','))
+                # tax_totals['formatted_amount_untaxed'] = tax_totals['formatted_amount_untaxed'].replace(
+                #     str(tax_totals['amount_untaxed']).replace('.', ','),
+                #     str(tax_totals['amount_untaxed'] - order.guarantee_percentage).replace('.',
+                #                                                                            ','))
                 tax_totals['amount_total'] -= order.guarantee_percentage
-                tax_totals['amount_untaxed'] -= order.guarantee_percentage
+                # tax_totals['amount_untaxed'] -= order.guarantee_percentage
 
                 tax_totals['guarantee_percentage'] = order.guarantee_percentage
                 tax_totals['guarantee_percentage_formatted'] = '{:.2f}'.format(order.guarantee_percentage).replace(

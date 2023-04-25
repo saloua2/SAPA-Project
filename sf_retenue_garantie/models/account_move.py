@@ -168,13 +168,11 @@ class AccountMove(models.Model):
                         str(move.tax_totals['amount_total']).replace('.', ','),
                         str(move.tax_totals['amount_total'] - move.prime_amount).replace(
                             '.', ','))
-                    move.tax_totals['formatted_amount_untaxed'] = move.tax_totals['formatted_amount_untaxed'].replace(
-                        str(move.tax_totals['amount_untaxed']).replace('.', ','),
-                        str(move.tax_totals['amount_untaxed'] - move.prime_amount).replace(
-                            '.', ','))
+                    # move.tax_totals['formatted_amount_untaxed'] = move.tax_totals['formatted_amount_untaxed'].replace(
+                    #     str(move.tax_totals['amount_untaxed']).replace('.', ','),
+                    #     str(move.tax_totals['amount_untaxed'] - move.prime_amount).replace(
+                    #         '.', ','))
                     move.tax_totals['amount_total'] -= move.prime_amount
-                    move.tax_totals['amount_untaxed'] -= move.prime_amount
-                    move.tax_totals['amount_untaxed'] -= move.prime_amount
                     move.tax_totals['prime_amount'] = move.prime_amount
                     move.tax_totals['prime_amount_formatted'] = '{:.2f}'.format(move.prime_amount).replace('.',
                                                                                                            ',') + ' ' + str(
@@ -184,13 +182,11 @@ class AccountMove(models.Model):
                         str(move.tax_totals['amount_total']).replace('.', ','),
                         str(move.tax_totals['amount_total'] - move.guarantee_percentage).replace(
                             '.', ','))
-                    move.tax_totals['formatted_amount_untaxed'] = move.tax_totals['formatted_amount_untaxed'].replace(
-                        str(move.tax_totals['amount_untaxed']).replace('.', ','),
-                        str(move.tax_totals['amount_untaxed'] - move.guarantee_percentage).replace(
-                            '.', ','))
+                    # move.tax_totals['formatted_amount_untaxed'] = move.tax_totals['formatted_amount_untaxed'].replace(
+                    #     str(move.tax_totals['amount_untaxed']).replace('.', ','),
+                    #     str(move.tax_totals['amount_untaxed'] - move.guarantee_percentage).replace(
+                    #         '.', ','))
                     move.tax_totals['amount_total'] -= move.guarantee_percentage
-                    move.tax_totals['amount_untaxed'] -= move.guarantee_percentage
-                    move.tax_totals['amount_untaxed'] -= move.guarantee_percentage
 
                     move.tax_totals['guarantee_percentage'] = move.guarantee_percentage
                     move.tax_totals['guarantee_percentage_formatted'] = '{:.2f}'.format(
