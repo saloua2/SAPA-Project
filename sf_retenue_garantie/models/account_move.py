@@ -35,7 +35,7 @@ class AccountMove(models.Model):
         due_date = fields.Date.context_today(self).replace(fields.Date.context_today(self).year + 1)
         res = super(AccountMove, self).action_post()
         vals = {
-            'name': 'Draft',
+            'name': _('New'),
             'invoice_number': self.name,
             'customer_id': self.partner_id.id,
             'amount': self.guarantee_percentage,

@@ -1,4 +1,4 @@
-from odoo import api, fields, models
+from odoo import api, fields, models, _
 
 
 class RetenueGarantie(models.Model):
@@ -6,7 +6,7 @@ class RetenueGarantie(models.Model):
     _description = 'Retenue de garantie'
     _order = 'id desc'
 
-    name = fields.Char('Retenue de ganatie')
+    name = fields.Char('Retenue de ganatie', copy=False, default=lambda self: _('New'))
     invoice_number = fields.Char('Numéro de la facture')
     customer_id = fields.Many2one('res.partner', 'Client')
     amount = fields.Float('Montant')
@@ -25,6 +25,8 @@ class RetenueGarantie(models.Model):
     active = fields.Boolean(string="Active", default=True)
 
     def action_confirm(self):
+        if self.name == _('New'):
+            self.name = self.env['ir.sequence'].next_by_code('seq.retenue.guarantee') or _('New')
         self.write({'state': 'confirmed'})
 
     def reset_draft(self):

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <record id="seq_retenue_guarantee" model="ir.sequence">
+            <field name="name">Retenue de garantie</field>
+            <field name="code">seq.retenue.guarantee</field>
+            <field name="prefix">RG</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"></field>
+        </record>
+    </data>
+</odoo>
