@@ -5,7 +5,7 @@
               parent="account.menu_finance_receivables"
               sequence="120"/>
 
-    <menuitem id="menu_retenue_garantie" name="Prime CEE" action="prime_cee_action"
+    <menuitem id="menu_prime_cee" name="Prime CEE" action="prime_cee_action"
               parent="account.menu_finance_receivables"
-              sequence="120"/>
+              sequence="130"/>
 </odoo>

@@ -9,6 +9,7 @@ class AccountMove(models.Model):
     sale_order_id = fields.Many2one('sale.order')
     guarantee_return = fields.Boolean(string="Retenue de Garantie")
     rg_percentage = fields.Float('Pourcentage(RG)')
+    date_echeance = fields.Date("Date d'échéance", compute='compute_date_echeance', readonly=False)
     prime_total_amount = fields.Float(compute='compute_prime_percentage')
     prime_amount = fields.Float("CEE Amount")
     prime = fields.Boolean(string="Prime CEE")
@@ -20,7 +21,12 @@ class AccountMove(models.Model):
 
     @api.depends('amount_total')
     def compute_guarantee_percentage(self):
-        self.guarantee_percentage = self.amount_total * (self.rg_percentage / 100)
+        for rec in self:
+            rec.guarantee_percentage = rec.amount_total * (rec.rg_percentage / 100)
+
+    def compute_date_echeance(self):
+        for rec in self:
+            rec.date_echeance = fields.Date.context_today(self).replace(fields.Date.context_today(self).year + 1)
 
     def action_post(self):
         due_date = fields.Date.context_today(self).replace(fields.Date.context_today(self).year + 1)
@@ -190,7 +196,7 @@ class AccountMove(models.Model):
                     move.tax_totals['guarantee_percentage'] = move.guarantee_percentage
                     move.tax_totals['guarantee_percentage_formatted'] = '{:.2f}'.format(
                         move.guarantee_percentage).replace('.',
-                                                           ',') + ' %'
+                                                           ',') + str(move.currency_id.symbol)
 
             else:
                 # Non-invoice moves don't support that field (because of multicurrency: all lines of the invoice share the same currency)
