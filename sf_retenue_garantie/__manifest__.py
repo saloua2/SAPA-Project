@@ -14,14 +14,20 @@
         'l10n_fr',
     ],
     'data': [
+        'data/products.xml',
         'security/ir.model.access.csv',
         'views/sale_make_invoice_advance_views.xml',
         'views/sale_order_views.xml',
         'views/account_move_views.xml',
         'views/retenue_garantie_views.xml',
         'views/account_menuitem.xml',
-        'views/res_config_settings_view.xml',
+        'views/prime_cee_views.xml',
     ],
+    'assets': {
+        'web.assets_backend': [
+            'sf_retenue_garantie/static/src/components/**/*',
+        ],
+    },
     'installable': True,
     'application': True,
     'license': 'LGPL-3',

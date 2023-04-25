@@ -13,8 +13,8 @@
             </group>
             <xpath expr="//field[@name='tax_totals']" position="after">
                 <field name="guarantee_percentage" invisible="1"/>
-                <field name="guarantee_percentage" attrs="{'invisible':[('guarantee_return','=',False)]}"/>
-                <field name="prime_total_amount" attrs="{'invisible':[('prime','=',False)]}"/>
+<!--                <field name="guarantee_percentage" attrs="{'invisible':[('guarantee_return','=',False)]}"/>-->
+<!--                <field name="prime_total_amount" attrs="{'invisible':[('prime','=',False)]}"/>-->
             </xpath>
         </field>
     </record>

@@ -45,11 +45,20 @@ class SaleAdvancePaymentInv(models.TransientModel):
             qty_to_invoice for each product_id in sale.order.line,
             before creating the invoice.
         """
+
         if self.advance_payment_method == 'retenue_de_garantie':
             if self.guarantee_percentage:
-                return sale_orders.with_context()._create_invoices(final=self.deduct_down_payments)
+                invoices = sale_orders.with_context(active_test=False)._create_invoices(final=self.deduct_down_payments)
+                for invoice in invoices:
+                    invoice.prime = self.prime
+                    if self.prime:
+                        invoice.prime_amount = self.prime_amount
+                return invoices
 
-        return super()._create_invoices(sale_orders)
+        invoices = super()._create_invoices(sale_orders)
+        for invoice in invoices:
+            invoice.prime = self.prime
+            if self.prime:
+                invoice.prime_amount = self.prime_amount
 
-
-
+        return invoices

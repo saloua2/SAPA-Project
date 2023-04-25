@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!--        <record model="product.template" id="product_template_prime_energie">-->
+        <!--            <field name="name">Prime Energie</field>-->
+        <!--            <field name="description">Collecte des documents et mise à disposition exclusive des dossiers d'économie-->
+        <!--                d'énergie CEE-->
+        <!--            </field>-->
+        <!--        </record>-->
+        <record model="product.product" id="product_prime_energie">
+            <field name="name">Prime Energie</field>
+            <!--            <field name="categ_id" ref="product.product_category_3"/>-->
+            <field name="type">service</field>
+            <field name="description">Collecte des documents et mise à disposition exclusive des dossiers d'économie
+                d'énergie CEE
+            </field>
+            <field name="list_price">1</field>
+            <field name="invoice_policy">order</field>
+            <field name="standard_price">1</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+            <field name="uom_po_id" ref="uom.product_uom_unit"/>
+            <field name="company_id" eval="[]"/>
+            <field name="taxes_id" eval="[]"/>
+        </record>
+        <record model="product.product" id="product_prime_cee">
+            <field name="name">Prime CEE</field>
+            <!--            <field name="categ_id" ref="product.product_category_3"/>-->
+            <field name="type">service</field>
+            <field name="description">Incitations Financiére des bénéficiéres</field>
+            <field name="list_price">1</field>
+            <field name="invoice_policy">order</field>
+            <field name="standard_price">1</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+            <field name="uom_po_id" ref="uom.product_uom_unit"/>
+            <field name="company_id" eval="[]"/>
+            <field name="taxes_id" eval="[]"/>
+        </record>
+        <!--        <record model="product.template" id="product_template_prime_cee">-->
+        <!--            <field name="name">Prime CEE</field>-->
+        <!--            <field name="description">Incitations Financiére des bénéficiéres</field>-->
+        <!--        </record>-->
+        <!--        <record model="product.product" id="product_prime_cee">-->
+        <!--            <field name="name">Prime CEE</field>-->
+        <!--            <field name="description_sale">Incitations Financiére des bénéficiéres</field>-->
+        <!--            <field name="lst_price">1.00</field>-->
+        <!--            <field name="product_tmpl_id" ref="product_template_prime_cee"/>-->
+        <!--        </record>-->
+    </data>
+</odoo>

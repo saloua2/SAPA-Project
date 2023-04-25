@@ -4,4 +4,8 @@
     <menuitem id="menu_retenue_garantie" name="Retenues de garantie" action="retenue_garantie_action"
               parent="account.menu_finance_receivables"
               sequence="120"/>
+
+    <menuitem id="menu_retenue_garantie" name="Prime CEE" action="prime_cee_action"
+              parent="account.menu_finance_receivables"
+              sequence="120"/>
 </odoo>
