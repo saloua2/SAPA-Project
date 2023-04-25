@@ -54,5 +54,38 @@ class AccountMove(models.Model):
         # res = super(AccountMove, self).action_post()
         return res
 
+    def action_entry(self):
+        compte_rg = self.env['account.account'].search([('code', '=', '411700')], limit=1)
+        print('****compte_rg***', compte_rg)
+        for rec in self:
+            move = {
+                'name': "/",
+                'date': self.invoice_date,
+                'journal_id': self.journal_id.id,
+                'company_id': self.company_id.id,
+                'partner_id': self.partner_id.id,
+                'move_type': 'entry',
+                'state': 'draft',
+                'ref': self.name + '- ' + 'RG',
+                'line_ids': [(0, 0, {
+                    'name': _("Test"),
+                    'partner_id': self.partner_id.id,
+                    'account_id': compte_rg.id,
+                    'debit': self.guarantee_percentage}),
+                             (0, 0, {
+                                 'name': "/",
+                                 'partner_id': self.partner_id.id,
+                                 'account_id': compte_rg.id,
+                                 'credit': self.guarantee_percentage
+                             })]
+            }
+            line_ids = []
+            move_id = self.env['account.move'].create(move)
+
+            line_ids += [(0, 0, move_id.id)]
+            move.update({'line_ids': line_ids})
+            print("move_id ************", move_id)
+
+
 
 

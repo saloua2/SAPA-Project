@@ -15,6 +15,9 @@
                 <field name="guarantee_percentage"/>
                 <field name="prime_total_amount" attrs="{'invisible':[('prime','=',False)]}"/>
             </xpath>
+            <xpath expr="//header/button[@name='button_draft']" position="after">
+                <button name="action_entry" string="Comptabiliser le retenue de garantie" type="object"/>
+            </xpath>
         </field>
     </record>
 </odoo>

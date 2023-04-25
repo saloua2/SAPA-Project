@@ -20,6 +20,7 @@
         'views/account_move_views.xml',
         'views/retenue_garantie_views.xml',
         'views/account_menuitem.xml',
+        'views/res_config_settings_view.xml',
     ],
     'installable': True,
     'application': True,
