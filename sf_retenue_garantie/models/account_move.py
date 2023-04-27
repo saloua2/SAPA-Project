@@ -61,31 +61,69 @@ class AccountMove(models.Model):
         for rec in self:
             move = {
                 'name': "/",
-                'date': self.invoice_date,
-                'journal_id': self.journal_id.id,
-                'company_id': self.company_id.id,
-                'partner_id': self.partner_id.id,
+                'date': rec.date,
+                'journal_id': rec.journal_id.id,
+                'company_id': rec.company_id.id,
+                'partner_id': rec.partner_id.id,
                 'move_type': 'entry',
                 'state': 'draft',
                 'ref': self.name + '- ' + 'RG',
-                'line_ids': [(0, 0, {
-                    'name': _("Test"),
+                'line_ids': [
+                    (0, 0, {
+                    'name': _("RG"),
                     'partner_id': self.partner_id.id,
                     'account_id': compte_rg.id,
                     'debit': self.guarantee_percentage}),
-                             (0, 0, {
-                                 'name': "/",
-                                 'partner_id': self.partner_id.id,
-                                 'account_id': compte_rg.id,
-                                 'credit': self.guarantee_percentage
-                             })]
+                     (0, 0, {
+                         'name': "/",
+                         'partner_id': self.partner_id.id,
+                         'account_id': compte_rg.id,
+                         'credit': self.guarantee_percentage
+                     })]
             }
-            line_ids = []
-            move_id = self.env['account.move'].create(move)
+            print('RG line_ids    ', move['line_ids'])
+            rec.update({'line_ids': move['line_ids']})
+            rg_move_id = self.env['account.move'].create(move)
+            rg_move_id.action_post()
+            rec.write({'id': rg_move_id.id})
+        return True
 
-            line_ids += [(0, 0, move_id.id)]
-            move.update({'line_ids': line_ids})
-            print("move_id ************", move_id)
+
+
+
+    # def action_entry(self):
+    #     compte_rg = self.env['account.account'].search([('code', '=', '411700')], limit=1)
+    #     for rec in self:
+    #         move = {
+    #             'name': '/',
+    #             'journal_id': rec.journal_id.id,
+    #             'date': rec.invoice_date,
+    #             'ref': rec.name + '- ' + 'RG',
+    #         }
+    #         line_ids = []
+    #         for line in rec.line_ids:
+    #             debit = rec.guarantee_percentage
+    #             credit = rec.guarantee_percentage
+    #
+    #             line_ids += [(0, 0, {
+    #                 'name': line.product_id.name or '/',
+    #                 'debit': debit,
+    #                 'account_id': compte_rg.id,
+    #                 'partner_id': rec.partner_id.id
+    #             }), (0, 0, {
+    #                 'name': line.product_id.name or '/',
+    #                 'credit': credit,
+    #                 'account_id': compte_rg.id,
+    #                 'partner_id': rec.partner_id.id
+    #             })
+    #                          ]
+    #         if line_ids:
+    #             move.update({'line_ids': line_ids})
+    #             move_id = line.env['account.move'].create(move)
+    #             print('move_id****', move_id)
+    #             # move_id.post()
+    #             # rec.write({'move_id': move_id.id})
+    #     return True
 
     @api.depends(
         'invoice_line_ids.currency_rate',
@@ -206,6 +244,36 @@ class AccountMove(models.Model):
                 # Non-invoice moves don't support that field (because of multicurrency: all lines of the invoice share the same currency)
                 move.tax_totals = None
 
+    # @api.depends(
+    #     'line_ids.matched_debit_ids.debit_move_id.move_id.payment_id.is_matched',
+    #     'line_ids.matched_debit_ids.debit_move_id.move_id.line_ids.amount_residual',
+    #     'line_ids.matched_debit_ids.debit_move_id.move_id.line_ids.amount_residual_currency',
+    #     'line_ids.matched_credit_ids.credit_move_id.move_id.payment_id.is_matched',
+    #     'line_ids.matched_credit_ids.credit_move_id.move_id.line_ids.amount_residual',
+    #     'line_ids.matched_credit_ids.credit_move_id.move_id.line_ids.amount_residual_currency',
+    #     'line_ids.balance',
+    #     'line_ids.currency_id',
+    #     'line_ids.amount_currency',
+    #     'line_ids.amount_residual',
+    #     'line_ids.amount_residual_currency',
+    #     'line_ids.payment_id.state',
+    #     'line_ids.full_reconcile_id',
+    #     'state',
+    #     'prime_amount',
+    #     'prime',
+    #     'rg_percentage',
+    #     'guarantee_return',
+    #     'guarantee_percentage')
+    # def _compute_amount(self):
+    #     super(AccountMove, self)._compute_amount()
+    #     for move in self:
+    #         if move.prime:
+    #             move.amount_residual -= move.prime_amount
+    #             move.amount_total -= move.prime_amount
+    #         if move.guarantee_return:
+    #             move.amount_residual -= move.guarantee_percentage
+    #             move.amount_total -= move.guarantee_percentage
+
     @api.depends(
         'line_ids.matched_debit_ids.debit_move_id.move_id.payment_id.is_matched',
         'line_ids.matched_debit_ids.debit_move_id.move_id.line_ids.amount_residual',
@@ -225,13 +293,62 @@ class AccountMove(models.Model):
         'prime',
         'rg_percentage',
         'guarantee_return',
-        'guarantee_percentage')
+        'guarantee_percentage'
+        )
     def _compute_amount(self):
-        super(AccountMove, self)._compute_amount()
         for move in self:
-            if move.prime:
-                move.amount_residual -= move.prime_amount
-                move.amount_total -= move.prime_amount
-            if move.guarantee_return:
-                move.amount_residual -= move.guarantee_percentage
-                move.amount_total -= move.guarantee_percentage
+            total_untaxed, total_untaxed_currency = 0.0, 0.0
+            total_tax, total_tax_currency = 0.0, 0.0
+            total_residual, total_residual_currency = 0.0, 0.0
+            total, total_currency = 0.0, 0.0
+
+            for line in move.line_ids:
+                if move.is_invoice(True):
+                    # === Invoices ===
+                    if line.display_type == 'tax' or (line.display_type == 'rounding' and line.tax_repartition_line_id):
+                        # Tax amount.
+                        total_tax += line.balance
+                        total_tax_currency += line.amount_currency
+                        total += line.balance
+                        total_currency += line.amount_currency
+                    elif line.display_type in ('product', 'rounding'):
+                        # Untaxed amount.
+                        total_untaxed += line.balance
+                        total_untaxed_currency += line.amount_currency
+                        total += line.balance #+ move.guarantee_percentage
+                        print('total2***', total)
+                        total_currency += line.amount_currency
+                    elif line.display_type == 'payment_term':
+                        # Residual amount.
+                        total_residual += line.amount_residual
+                        total_residual_currency += line.amount_residual_currency
+                else:
+                    # === Miscellaneous journal entry ===
+                    if line.debit:
+                        total += line.balance
+                        total_currency += line.amount_currency
+
+            sign = move.direction_sign
+            move.amount_untaxed = sign * total_untaxed_currency
+            move.amount_tax = sign * total_tax_currency
+            move.amount_total = sign * total_currency - move.guarantee_percentage
+            move.amount_residual = -sign * total_residual_currency - move.guarantee_percentage
+            move.amount_untaxed_signed = -total_untaxed
+            move.amount_tax_signed = -total_tax
+            move.amount_total_signed = abs(total) if move.move_type == 'entry' else -total
+            move.amount_residual_signed = total_residual
+            move.amount_total_in_currency_signed = abs(move.amount_total) if move.move_type == 'entry' else -(
+                        sign * move.amount_total)
+
+class AccountMoveLine(models.Model):
+    _inherit = 'account.move.line'
+
+    @api.depends('balance', 'move_id.is_storno')
+    def _compute_debit_credit(self):
+        for line in self:
+            if not line.is_storno:
+                line.debit = line.balance - self.move_id.guarantee_percentage if line.balance > 0.0 else 0.0
+                line.credit = -line.balance - self.move_id.guarantee_percentage if line.balance < 0.0 else 0.0
+            else:
+                line.debit = line.balance - self.move_id.guarantee_percentage if line.balance < 0.0 else 0.0
+                line.credit = -line.balance - self.move_id.guarantee_percentage if line.balance > 0.0 else 0.0
