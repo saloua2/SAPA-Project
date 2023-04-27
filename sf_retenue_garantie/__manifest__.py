@@ -24,6 +24,7 @@
         'views/retenue_garantie_views.xml',
         'views/prime_cee_views.xml',
         'views/account_menuitem.xml',
+        'views/res_partner.xml',
     ],
     'assets': {
         'web.assets_backend': [
