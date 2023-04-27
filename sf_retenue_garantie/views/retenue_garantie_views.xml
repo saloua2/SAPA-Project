@@ -25,6 +25,7 @@
                             <group>
                                 <field name="invoice_number"/>
                                 <field name="customer_id"/>
+                                <field name="invoice_date"/>
                             </group>
                             <group>
                                 <field name="amount"/>
@@ -42,9 +43,10 @@
                 <tree>
                     <field name="name"/>
                     <field name="invoice_number"/>
+                    <field name="invoice_date"/>
+                    <field name="due_date"/>
                     <field name="customer_id"/>
                     <field name="amount"/>
-                    <field name="due_date"/>
                 </tree>
             </field>
         </record>

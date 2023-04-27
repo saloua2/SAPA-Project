@@ -1,6 +1,8 @@
 from odoo import api, fields, models
 import logging
+
 _logger = logging.getLogger(__name__)
+
 
 class SaleOrder(models.Model):
     _inherit = "sale.order"
@@ -52,18 +54,23 @@ class SaleOrder(models.Model):
                 order.currency_id or order.company_id.currency_id,
             )
             if order.prime and order.guarantee_return:
-                tax_totals['custom'] = '{:.2f}'.format(tax_totals['amount_total'] - (order.prime_amount + order.guarantee_percentage)).replace('.', ',')
+                tax_totals['custom'] = '{:.2f}'.format(
+                    tax_totals['amount_total'] - (order.prime_amount + order.guarantee_percentage)).replace('.',
+                                                                                                            ',') + ' ' + str(
+                    order.currency_id.symbol)
                 tax_totals['prime_amount'] = order.prime_amount
                 tax_totals['prime_amount_formatted'] = '{:.2f}'.format(
                     order.prime_amount).replace('.',
-                                                                             ',') + ' ' + str(
+                                                ',') + ' ' + str(
                     order.currency_id.symbol)
                 tax_totals['guarantee_percentage'] = order.guarantee_percentage
                 tax_totals['guarantee_percentage_formatted'] = '{:.2f}'.format(order.guarantee_percentage).replace(
                     '.',
-                    ',') + str(order.currency_id.symbol)
+                    ',') + ' ' + str(order.currency_id.symbol)
             elif order.prime:
-                tax_totals['custom'] = '{:.2f}'.format(tax_totals['amount_total'] - order.prime_amount).replace('.', ',')
+                tax_totals['custom'] = '{:.2f}'.format(tax_totals['amount_total'] - order.prime_amount).replace('.',
+                                                                                                                ',') + ' ' + str(
+                    order.currency_id.symbol)
 
                 _logger.info("tax_totals %s", tax_totals)
                 _logger.info("formatted_amount_total_custom %s", tax_totals['custom'])
@@ -81,15 +88,14 @@ class SaleOrder(models.Model):
                 tax_totals['prime_amount'] = order.prime_amount
                 tax_totals['prime_amount_formatted'] = '{:.2f}'.format(
                     order.prime_amount).replace('.',
-                                                                             ',') + ' ' + str(
+                                                ',') + ' ' + str(
                     order.currency_id.symbol)
             elif order.guarantee_return:
                 tax_totals['formatted_amount_total'] = tax_totals['formatted_amount_total'].replace(
                     str(tax_totals['amount_total']).replace('.', ','),
                     str(tax_totals['amount_total'] - order.guarantee_percentage).replace('.', ','))
-                tax_totals['custom'] = tax_totals['formatted_amount_total'].replace(
-                    str(tax_totals['amount_total']).replace('.', ','),
-                    str(tax_totals['amount_total'] - order.guarantee_percentage).replace('.', ','))
+                tax_totals['custom'] = '{:.2f}'.format(tax_totals['amount_total'] - order.guarantee_percentage).replace(
+                    '.', ',') + ' ' + str(order.currency_id.symbol)
                 # tax_totals['formatted_amount_untaxed'] = tax_totals['formatted_amount_untaxed'].replace(
                 #     str(tax_totals['amount_untaxed']).replace('.', ','),
                 #     str(tax_totals['amount_untaxed'] - order.guarantee_percentage).replace('.',

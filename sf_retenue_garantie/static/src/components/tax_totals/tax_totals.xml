@@ -40,7 +40,7 @@
                 </tr>
                 <tr t-if="totals.prime_amount_formatted">
                     <td class="o_td_label">
-                        <label class="o_form_label o_tax_total_label">Montant CEE</label>
+                        <label class="o_form_label o_tax_total_label">Prime CEE</label>
                     </td>
                     <td>
                         <span

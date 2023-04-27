@@ -1,4 +1,4 @@
-from odoo import api, fields, models
+from odoo import api, fields, models, _
 
 
 class PrimeCEE(models.Model):
@@ -10,7 +10,9 @@ class PrimeCEE(models.Model):
     customer_id = fields.Many2one('res.partner', 'Client')
     amount = fields.Float('Montant')
     due_date = fields.Date("Date d'échance")
-    move_id = fields.Many2one('account.move', 'Invoice')
+    invoice_date = fields.Date("Date de la facture")
+    move_id = fields.Many2one('account.move', 'Facture de débours')
+    origin_move_id = fields.Many2one('account.move', "Facture d'origine")
     state = fields.Selection(
         selection=[
             ('draft', 'Draft'),
@@ -24,11 +26,13 @@ class PrimeCEE(models.Model):
         default='draft',
     )
     account_id = fields.Many2one(
-        comodel_name='account.account',string="Account"
+        comodel_name='account.account',string="Compte"
     )
     active = fields.Boolean(string="Active", default=True)
 
     def action_confirm(self):
+        if self.name == _('New'):
+            self.name = self.env['ir.sequence'].next_by_code('seq.prime.cee') or _('New')
         self.write({'state': 'confirmed'})
 
     def reset_draft(self):
