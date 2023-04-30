@@ -55,10 +55,17 @@ class SaleAdvancePaymentInv(models.TransientModel):
                         invoice.prime_amount = self.prime_amount
                 return invoices
 
-        invoices = super()._create_invoices(sale_orders)
+        invoices = sale_orders.with_context(active_test=False)._create_invoices(final=self.deduct_down_payments)
+        account_id = self.env['account.account'].search([('code', '=', '467300')])
+        product_id = self.env['product.product'].search([('property_account_income_id', '=', account_id.id)])
+        currency_id = account_id.company_id.currency_id
         for invoice in invoices:
             invoice.prime = self.prime
             if self.prime:
                 invoice.prime_amount = self.prime_amount
+                price_unit = -1 * self.prime_amount
+                invoice.invoice_line_ids = [[0, 0, {'product_id': product_id.id, 'name':'RG', 'account_id': account_id.id,
+                                             'quantity': 1.0, 'price_unit': price_unit, 'tax_ids': False,
+                                             'price_subtotal': 0.0, 'currency_id': currency_id.id}]]
 
         return invoices
