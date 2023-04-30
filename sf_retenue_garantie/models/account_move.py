@@ -14,6 +14,15 @@ class AccountMove(models.Model):
     prime_total_amount = fields.Float(compute='compute_prime_percentage')
     prime_amount = fields.Float("CEE Amount")
     prime = fields.Boolean(string="Prime CEE")
+    invoice_line_ids = fields.One2many(  # /!\ invoice_line_ids is just a subset of line_ids.
+        'account.move.line',
+        'move_id',
+        string='Invoice lines',
+        copy=False,
+        readonly=True,
+        domain= lambda self: self.env['account.move.line']._domain_invoice_line_ids(),
+        states={'draft': [('readonly', False)]},
+    )
 
     @api.depends('amount_total', 'prime_amount')
     def compute_prime_percentage(self):
@@ -47,11 +56,23 @@ class AccountMove(models.Model):
             account_id = self.env['account.account'].search([('code', '=', '467300')])
             line_id = rec.invoice_line_ids.filtered(lambda line: line.account_id.id == account_id.id)
             if rec.prime:
-                line_id.price_unit = -rec.prime_amount
+                if line_id:
+                    line_id.price_unit = -rec.prime_amount
             if not rec.prime:
                 # rec.write({'invoice_line_ids': [(3, line_id.id, False)], 'prime_amount': 0.0})
                 rec.write({'prime_amount': 0.0})
-                line_id.price_unit = 0.0
+                if line_id:
+                    line_id.price_unit = 0.0
+
+    # def _domain_invoice_line_ids(self):
+    #     domain = {}
+    #     for rec in self:
+    #         if rec.invoice_date:
+    #             account_id = self.env['account.account'].search([('code', '=', '467300')])
+    #
+    #             if account_id:
+    #                 domain = {'domain': {'invoice_line_ids': [('account_id', '!=', account_id.id)]}}
+    #             return domain
 
     def action_post(self):
         due_date = fields.Date.context_today(self).replace(fields.Date.context_today(self).year + 1)
@@ -175,18 +196,18 @@ class AccountMove(models.Model):
                 elif move.prime:
                     move.tax_totals['formatted_amount_total'] = move.tax_totals['formatted_amount_total'].replace(
                         str(move.tax_totals['amount_total']).replace('.', ','),
-                        str(move.tax_totals['amount_total']).replace(
+                        str(move.tax_totals['amount_total'] - move.prime_amount).replace(
                             '.', ','))
                     move.tax_totals['custom'] = move.tax_totals['formatted_amount_total'].replace(
                         str(move.tax_totals['amount_total']).replace('.', ','),
-                        str(move.tax_totals['amount_total']).replace(
+                        str(move.tax_totals['amount_total'] - move.prime_amount).replace(
                             '.', ','))
 
                     move.tax_totals['formatted_amount_untaxed'] = move.tax_totals['formatted_amount_untaxed'].replace(
                         str(move.tax_totals['amount_untaxed']).replace('.', ','),
-                        str(move.tax_totals['amount_untaxed']).replace(
+                        str(move.tax_totals['amount_untaxed'] - move.prime_amount).replace(
                             '.', ','))
-                    # move.tax_totals['amount_total'] -= move.prime_amount
+                    move.tax_totals['amount_total'] -= move.prime_amount
                     move.tax_totals['prime_amount'] = move.prime_amount
                     move.tax_totals['prime_amount_formatted'] = '{:.2f}'.format(move.prime_amount).replace('.',
                                                                                                            ',') + ' ' + str(
@@ -242,10 +263,10 @@ class AccountMove(models.Model):
     def _compute_amount(self):
         super(AccountMove, self)._compute_amount()
         for move in self:
-            # if move.prime:
-            #
-            #     move.amount_residual -= move.prime_amount
-            #     move.amount_total -= move.prime_amount
+            if move.prime:
+
+                move.amount_residual -= move.prime_amount
+                move.amount_total -= move.prime_amount
             if move.guarantee_return:
                 move.amount_residual -= move.guarantee_percentage
                 move.amount_total -= move.guarantee_percentage
@@ -327,3 +348,12 @@ class AccountMoveLine(models.Model):
             else:
                 line.debit = line.balance if line.balance < 0.0 else 0.0
                 line.credit = -line.balance if line.balance > 0.0 else 0.0
+
+    @api.model
+    def _domain_invoice_line_ids(self):
+        res = [('account_id', '=', 0)]  # Nothing accepted by domain, by default
+        account_id = self.env['account.account'].search([('code', '=', '467300')])
+
+        if account_id:
+            res = [('account_id', '!=', account_id.id), ('display_type', 'in', ('product', 'line_section', 'line_note'))]
+        return res
