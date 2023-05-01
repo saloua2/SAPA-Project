@@ -10,7 +10,8 @@ class RetenueGarantie(models.Model):
     invoice_number = fields.Char('Numéro de la facture')
     customer_id = fields.Many2one('res.partner', 'Client')
     amount = fields.Float('Montant')
-    due_date = fields.Date("Date d'échance")
+    due_date = fields.Date("Date d'échance (RG)")
+    invoice_date = fields.Date("Date de la facture")
     state = fields.Selection(
         selection=[
             ('draft', 'Draft'),
@@ -22,6 +23,7 @@ class RetenueGarantie(models.Model):
         tracking=True,
         default='draft',
     )
+    invoice_date = fields.Date("Date de la facture")
     active = fields.Boolean(string="Active", default=True)
 
     def action_confirm(self):

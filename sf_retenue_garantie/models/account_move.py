@@ -81,18 +81,21 @@ class AccountMove(models.Model):
             'name': _('New'),
             'invoice_number': self.name,
             'customer_id': self.partner_id.id,
+            'invoice_date': self.invoice_date,
             'amount': self.guarantee_percentage,
             'due_date': due_date
         }
         self.env['sf.retenue.guarantee'].create(vals)
         if self.prime:
-            account = self.env['account.account'].search([('code', '=', '467300')], limit=1)
+            account = self.env['account.account'].search([('code', '=', '467300000')], limit=1)
             vals_cee = {
                 'name': _('New'),
                 'invoice_number': self.name,
+                'origin_move_id': self.id,
+                'invoice_date': self.invoice_date,
                 'customer_id': self.partner_id.id,
                 'amount': self.prime_total_amount,
-                'due_date': fields.Date.context_today(self),
+                'due_date': self.invoice_date_due,
                 'account_id': account.id
             }
             self.env['sf.prime.cee'].create(vals_cee)
@@ -183,7 +186,8 @@ class AccountMove(models.Model):
                 if move.prime and move.guarantee_return:
                     move.tax_totals['custom'] = '{:.2f}'.format(
                         move.tax_totals['amount_total'] - (move.prime_amount + move.guarantee_percentage)).replace('.',
-                                                                                                                   ',')
+                                                                                                                   ',') + ' ' + str(
+                        move.currency_id.symbol)
                     move.tax_totals['amount_total'] -= move.prime_amount
                     move.tax_totals['prime_amount'] = move.prime_amount
                     move.tax_totals['prime_amount_formatted'] = '{:.2f}'.format(move.prime_amount).replace('.',
@@ -192,16 +196,20 @@ class AccountMove(models.Model):
                     move.tax_totals['guarantee_percentage'] = move.guarantee_percentage
                     move.tax_totals['guarantee_percentage_formatted'] = '{:.2f}'.format(
                         move.guarantee_percentage).replace('.',
-                                                           ',') + str(move.currency_id.symbol)
+                                                           ',') + ' ' + str(move.currency_id.symbol)
                 elif move.prime:
                     move.tax_totals['formatted_amount_total'] = move.tax_totals['formatted_amount_total'].replace(
                         str(move.tax_totals['amount_total']).replace('.', ','),
                         str(move.tax_totals['amount_total'] - move.prime_amount).replace(
                             '.', ','))
                     move.tax_totals['custom'] = move.tax_totals['formatted_amount_total'].replace(
-                        str(move.tax_totals['amount_total']).replace('.', ','),
-                        str(move.tax_totals['amount_total'] - move.prime_amount).replace(
+                        '{:.2f}'.format(move.tax_totals['amount_total']).replace('.', ','),
+                        '{:.2f}'.format(move.tax_totals['amount_total'] - move.prime_amount).replace(
                             '.', ','))
+                    # move.tax_totals['custom'] = move.tax_totals['formatted_amount_total'].replace(
+                    #     str(move.tax_totals['amount_total']).replace('.', ','),
+                    #     str(move.tax_totals['amount_total'] - move.prime_amount).replace(
+                    #         '.', ','))
 
                     move.tax_totals['formatted_amount_untaxed'] = move.tax_totals['formatted_amount_untaxed'].replace(
                         str(move.tax_totals['amount_untaxed']).replace('.', ','),
