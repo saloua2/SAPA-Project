@@ -6,22 +6,39 @@
         <field name="inherit_id" ref="sale.view_sale_advance_payment_inv"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='advance_payment_method']" position="after">
-                <label for="guarantee_percentage"
+
+                <div id="retenue_details">
+                    <label for="guarantee_percentage"
                        string="Pourcentage"
                        attrs="{'invisible': [('advance_payment_method', '!=', 'retenue_de_garantie')]}"/>
-                <div id="retenue_details">
+
                     <field name="guarantee_percentage"
                            attrs="{'invisible': [('advance_payment_method', '!=', 'retenue_de_garantie')]}"
                            class="oe_inline"/>
                     <span attrs="{'invisible': [('advance_payment_method', '!=', 'retenue_de_garantie')]}"
                           class="oe_inline">%
                     </span>
+                    <br></br>
+                    <label for="due_date"
+                       string="Date d'échance"
+                       attrs="{'invisible': [('advance_payment_method', '!=', 'retenue_de_garantie')]}"/>
+                     <field name="due_date"
+                       attrs="{'invisible': [('advance_payment_method', '!=', 'retenue_de_garantie')]}"/>
                 </div>
-                <field name="due_date" attrs="{'invisible': [('advance_payment_method', '!=', 'retenue_de_garantie')]}"/>
-                <field name="prime" invisible="1"/>
-                <field name="prime_amount"
-                       attrs="{'invisible': ['|', ('advance_payment_method', '!=', 'retenue_de_garantie'), ('prime', '!=', True)]}"
-                       class="oe_inline"/>
+
+            </xpath>
+
+            <xpath expr="//field[@name='advance_payment_method']" position="after">
+
+                <div id="cee_details">
+                    <field name="prime" invisible="1"/>
+                    <label for="prime_amount"
+                       string="Prime CEE"
+                       attrs="{'invisible': [('advance_payment_method', '!=', 'prime_cee')]}"/>
+                    <field name="prime_amount"
+                           attrs="{'invisible': ['|', ('advance_payment_method', '!=', 'prime_cee'), ('prime', '!=', True)]}"
+                           class="oe_inline"/>
+                </div>
             </xpath>
         </field>
     </record>

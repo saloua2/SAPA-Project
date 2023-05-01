@@ -35,6 +35,32 @@
             <field name="company_id" eval="[]"/>
             <field name="taxes_id" eval="[]"/>
         </record>
+        <record model="product.product" id="product_prime_cee_ec">
+            <field name="name">Prime CEE EC</field>
+            <!--            <field name="categ_id" ref="product.product_category_3"/>-->
+            <field name="type">service</field>
+            <field name="description">Incitations Financiére des bénéficiéres</field>
+            <field name="list_price">1</field>
+            <field name="invoice_policy">order</field>
+            <field name="standard_price">1</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+            <field name="uom_po_id" ref="uom.product_uom_unit"/>
+            <field name="company_id" eval="[]"/>
+            <field name="taxes_id" eval="[]"/>
+        </record>
+        <record model="product.product" id="product_rg">
+            <field name="name">Retenue de garantie EC</field>
+            <!--            <field name="categ_id" ref="product.product_category_3"/>-->
+            <field name="type">service</field>
+            <field name="description"></field>
+            <field name="list_price">1</field>
+            <field name="invoice_policy">order</field>
+            <field name="standard_price">1</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+            <field name="uom_po_id" ref="uom.product_uom_unit"/>
+            <field name="company_id" eval="[]"/>
+            <field name="taxes_id" eval="[]"/>
+        </record>
         <!--        <record model="product.template" id="product_template_prime_cee">-->
         <!--            <field name="name">Prime CEE</field>-->
         <!--            <field name="description">Incitations Financiére des bénéficiéres</field>-->
