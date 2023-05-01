@@ -85,7 +85,7 @@ class AccountMove(models.Model):
                 res['invoice_line_ids'] = invoice_line_ids
         return res
 
-    @api.onchange('prime_amount', 'prime', 'guarantee_return', 'rg_percentage')
+    @api.onchange('prime_amount', 'prime', 'guarantee_return', 'rg_percentage', 'invoice_line_ids')
     def onchange_prime_rg(self):
         for rec in self:
             account_id = self.env['account.account'].search([('code', '=', '467300000')])
@@ -99,6 +99,7 @@ class AccountMove(models.Model):
                 if rec.guarantee_return:
                     if rg_line_id:
                         rg_line_id.price_unit = -(rec.tax_totals['amount_total'] * (rec.rg_percentage / 100))
+                        rg_line_id.write({'price_unit': -(rec.tax_totals['amount_total'] * (rec.rg_percentage / 100))})
                 else:
                     if rg_line_id:
                         rg_line_id.price_unit = 0.0
@@ -107,6 +108,7 @@ class AccountMove(models.Model):
                 if rec.prime:
                     if line_id:
                         line_id.price_unit = -rec.prime_amount
+                        line_id.write({'price_unit': -rec.prime_amount})
                 else:
                     rec.write({'prime_amount': 0.0})
                     if line_id:
