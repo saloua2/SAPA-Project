@@ -223,7 +223,7 @@ class AccountMove(models.Model):
                 elif move.guarantee_return:
                     move.tax_totals['formatted_amount_total'] = move.tax_totals['formatted_amount_total'].replace(
                         str(move.tax_totals['amount_total']).replace('.', ','),
-                        str(move.tax_totals['amount_total']).replace(
+                        str(move.tax_totals['amount_total'] - move.prime_amount).replace(
                             '.', ','))
                     move.tax_totals['custom'] = move.tax_totals['formatted_amount_total'].replace(
                         str(move.tax_totals['amount_total']).replace('.', ','),
